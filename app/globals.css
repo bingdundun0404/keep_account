@@ -1,0 +1,333 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 夜空背景：启用于睡眠记录与睡眠中页面。使用纯 CSS 渐变与轻量动画，保证性能与可读性 */
+.night-sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0; /* 页面内容默认层级在其上方 */
+  pointer-events: none; /* 不阻挡交互 */
+}
+.night-sky__gradient {
+  position: absolute;
+  inset: 0;
+  /* 深色基调渐变，顶部更深，底部稍亮以衬托内容 */
+  background: radial-gradient(1200px 600px at 80% -10%, #0b1023 10%, #0b0f1b 45%, #070a14 80%),
+              linear-gradient(180deg, #070a14 0%, #0b0f1b 65%, #0b1023 100%);
+}
+.night-sky__vignette {
+  position: absolute;
+  inset: 0;
+  /* 边缘暗角提升可读性 */
+  background: radial-gradient(60% 60% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.25) 100%);
+}
+
+/* 月亮与微弱月光 */
+.night-sky__moon {
+  position: absolute;
+  width: clamp(80px, 10vw, 120px);
+  height: clamp(80px, 10vw, 120px);
+  right: clamp(12px, 4vw, 32px);
+  top: clamp(8px, 3vw, 24px);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f7f3d6 0%, #e9e3bd 30%, #c4bfa3 60%, rgba(255,255,255,0.05) 100%);
+  box-shadow: 0 0 60px 20px rgba(247,243,214,0.06), 0 0 120px 50px rgba(247,243,214,0.05) inset;
+  animation: moonGlow 12s ease-in-out infinite;
+  will-change: filter, opacity;
+}
+
+/* 月相叠加层，与月亮光晕同位置、同尺寸 */
+.night-sky__moon-phase {
+  position: absolute;
+  width: clamp(80px, 10vw, 120px);
+  height: clamp(80px, 10vw, 120px);
+  right: clamp(12px, 4vw, 32px);
+  top: clamp(8px, 3vw, 24px);
+}
+
+/* 星星分三层：近/中/远，缓慢移动与轻微闪烁以营造空间层次 */
+.night-sky__stars {
+  position: absolute;
+  inset: -5%; /* 微增以避免移动时露边 */
+  background-repeat: repeat;
+  background-size: 140px 140px;
+  opacity: 0.7;
+  animation: twinkle 5s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+.night-sky__stars--far {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.6) 50%, transparent 51%),
+    radial-gradient(1px 1px at 80px 60px, rgba(255,255,255,0.45) 50%, transparent 51%),
+    radial-gradient(1px 1px at 120px 20px, rgba(255,255,255,0.5) 50%, transparent 51%);
+  transform: translate3d(0, 0, 0);
+  animation: driftSlow 120s linear infinite, twinkle 6s ease-in-out infinite alternate;
+}
+.night-sky__stars--mid {
+  background-size: 120px 120px;
+  background-image:
+    radial-gradient(1.2px 1.2px at 30px 90px, rgba(255,255,255,0.8) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 70px 30px, rgba(255,255,255,0.7) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 10px 10px, rgba(255,255,255,0.65) 50%, transparent 51%);
+  animation: driftMid 90s linear infinite, twinkle 5.5s ease-in-out infinite alternate;
+}
+.night-sky__stars--near {
+  background-size: 100px 100px;
+  background-image:
+    radial-gradient(1.6px 1.6px at 20px 20px, rgba(255,255,255,0.9) 40%, transparent 41%),
+    radial-gradient(1.6px 1.6px at 60px 70px, rgba(255,255,255,0.85) 40%, transparent 41%),
+    radial-gradient(1.6px 1.6px at 100px 40px, rgba(255,255,255,0.8) 40%, transparent 41%);
+  animation: driftNear 60s linear infinite, twinkle 5s ease-in-out infinite alternate;
+}
+
+/* 云层：仅在睡眠中页面使用，柔和移动且透明，避免遮挡内容 */
+.night-sky__cloud {
+  position: absolute;
+  left: -40vw;
+  width: 80vw;
+  height: clamp(80px, 14vw, 160px);
+  filter: blur(12px);
+  opacity: 0.08;
+  background: radial-gradient(60% 60% at 30% 50%, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
+  animation: cloudDrift 160s linear infinite;
+}
+.night-sky__cloud--1 { top: 22vh; }
+.night-sky__cloud--2 { top: 46vh; animation-duration: 200s; opacity: 0.06; }
+
+@keyframes driftSlow {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-4%, 2%, 0); }
+}
+@keyframes driftMid {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-8%, 4%, 0); }
+}
+@keyframes driftNear {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-12%, 6%, 0); }
+}
+@keyframes twinkle {
+  from { opacity: 0.6; }
+  50% { opacity: 0.8; }
+  to { opacity: 0.7; }
+}
+@keyframes moonGlow {
+  from { filter: brightness(0.98); opacity: 0.95; }
+  50% { filter: brightness(1.02); opacity: 1; }
+  to { filter: brightness(0.98); opacity: 0.95; }
+}
+@keyframes cloudDrift {
+  from { transform: translateX(0); }
+  to { transform: translateX(140vw); }
+}
+
+/* 无障碍：用户偏好“减少动态”时关闭动画 */
+@media (prefers-reduced-motion: reduce) {
+  .night-sky__stars,
+  .night-sky__moon,
+  .night-sky__cloud {
+    animation: none !important;
+  }
+}
+
+/* 响应式按钮文字：保持单行，并在窄屏时缩小字体，设定最小值 */
+.responsive-btn-text {
+  white-space: nowrap;
+  font-size: clamp(12px, 0.9rem + 0.25vw, 14px);
+  line-height: 1.25;
+  transition: background-color 160ms ease;
+}
+
+/* 非睡眠系列任务的按钮统一悬停效果：背景变为淡灰色（#f5f5f5） */
+.responsive-btn-text:hover {
+  /* 与返回按钮 hover:bg-zinc-800 保持一致 */
+  background-color: rgb(39 39 42);
+}
+
+/* 通用按钮样式与交互反馈（含轻微缩放与涟漪效果） */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(63 63 70);
+  background: rgb(24 24 27);
+  color: rgb(228 228 231);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  overflow: hidden;
+}
+.btn:hover { background: rgb(39 39 42); }
+.btn:active { transform: scale(0.98); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0) 70%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: width 220ms ease, height 220ms ease, opacity 220ms ease;
+}
+.btn:active::after {
+  width: 220%;
+  height: 220%;
+  opacity: 1;
+}
+
+.btn-primary {
+  border-color: rgb(37 99 235);
+  background: rgb(37 99 235);
+  color: white;
+}
+.btn-primary:hover { background: rgb(29 78 216); border-color: rgb(29 78 216); }
+.btn-primary:active { transform: scale(0.98); }
+
+/* 输入框样式与焦点状态 */
+.input {
+  border: 1px solid rgb(63 63 70);
+  background: rgb(24 24 27);
+  color: rgb(228 228 231);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+.input:focus { outline: none; border-color: rgb(37 99 235); box-shadow: 0 0 0 3px rgba(37,99,235,0.25); }
+
+/* 评分星星按钮 */
+.stars { display: flex; gap: var(--space-sm); }
+.star-btn {
+  font-size: clamp(20px, 3.6vw, 28px);
+  line-height: 1;
+  color: rgb(82 82 91);
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  transition: transform 160ms ease, color 160ms ease;
+}
+.star-btn:hover { transform: scale(1.08); color: rgb(113 113 122); }
+.star-btn.selected { color: rgb(250 204 21); }
+.star-btn:active { transform: scale(0.96); }
+.star-btn:focus { outline: none; box-shadow: 0 0 0 3px rgba(250,204,21,0.35); border-radius: 0.25rem; }
+
+/* 快捷备注 Chip */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(63 63 70);
+  background: rgb(24 24 27);
+  color: rgb(228 228 231);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.chip:hover { background: rgb(39 39 42); }
+.chip:active { transform: scale(0.98); }
+.chip.selected { border-color: rgb(37 99 235); color: white; background: rgb(37 99 235); }
+
+/* 过渡动画辅助类 */
+.fade-in { animation: fadeIn 200ms ease both; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 全局间距变量：避免固定像素，适配不同屏幕宽度与密度 */
+:root {
+  --space-xs: clamp(0.5rem, 1.8vw, 0.75rem);
+  --space-sm: clamp(0.625rem, 2.4vw, 1rem);
+  --space-md: clamp(1rem, 3.6vw, 1.5rem);
+}
+
+/* 按钮行：严格右对齐，提供安全边距与响应式间距 */
+.responsive-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-sm);
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* 右上角悬浮容器：考虑全面屏安全区与响应式顶部间距 */
+.safe-fixed-top-right {
+  position: fixed;
+  top: clamp(0.5rem, 2.5vw, 1rem);
+  right: max(1rem, env(safe-area-inset-right));
+}
+
+@media (max-width: 360px) {
+  /* 小屏设备上适当缩小按钮间距，保持最小安全边距 */
+  .responsive-actions {
+    gap: var(--space-xs);
+    padding-left: max(0.75rem, env(safe-area-inset-left));
+    padding-right: max(0.75rem, env(safe-area-inset-right));
+  }
+}
+
+/* 日历格子：时间与“含小睡”标签的显示优化 */
+.grid-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 0; /* 数字与 h 紧密连接，不出现任何间距 */
+  white-space: nowrap;
+  overflow: hidden;
+  /* 更加激进的缩放以适配窄容器，优先缩小字号而不是隐藏 h */
+  font-size: clamp(10px, 2vw, 14px);
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.grid-time-value {
+  display: inline-block;
+  /* 移除固定宽度，避免在极窄容器中被裁剪，依赖字号缩小适配 */
+  max-width: 100%;
+}
+.grid-time-unit { opacity: 0.85; }
+
+.grid-nap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(10px, 1.8vw, 11px);
+  line-height: 1.2;
+}
+
+.calendar-grid { gap: var(--space-sm); }
+.calendar-cell { overflow: hidden; }
+
+@media (max-width: 420px) {
+  .calendar-grid { gap: var(--space-xs); }
+  .calendar-cell { padding: 0.35rem; }
+  .grid-time { font-size: clamp(9px, 3vw, 13px); }
+  .grid-time-value { max-width: 100%; }
+  .grid-nap { font-size: clamp(9px, 2.4vw, 10px); }
+}
+
+/* 不在任何设备上隐藏 h，始终保持数字与 h 紧密连接显示 */
