@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import dayjs from '../lib/dayjs';
 import { db } from '../lib/db';
 import { useAppStore } from '../store/appStore';
-import { groupSessionsByDay, monthDays, calcDayTotals, toHoursString } from '../lib/time';
+import { groupSessionsByDay, monthDays, calcDayTotals } from '../lib/time';
 import { SleepSession } from '../lib/types';
 import Link from 'next/link';
 

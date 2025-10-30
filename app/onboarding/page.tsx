@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '../../store/appStore';
 import { db } from '../../lib/db';
+import type { Profile } from '../../lib/types';
 
 export default function OnboardingPage() {
   const [name, setName] = useState('');
@@ -27,7 +28,7 @@ export default function OnboardingPage() {
             const input = (name || '').trim();
             if (!input) { alert('请输入账户名称'); return; }
             const all = await db.profiles.toArray();
-            const exists = all.some((p) => p.name === input);
+            const exists = all.some((p: Profile) => p.name === input);
             if (exists) { alert('不可创建同名账户'); return; }
             const id = Math.random().toString(36).slice(2) + Date.now().toString(36);
             const now = new Date().toISOString();

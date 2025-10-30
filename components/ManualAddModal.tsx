@@ -98,8 +98,9 @@ export default function ManualAddModal({ open, onClose, onSuccess }: ManualAddMo
 
       onSuccess?.();
       onClose();
-    } catch (e: any) {
-      setError(e?.message ?? '保存失败');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : String(e);
+      setError(msg ?? '保存失败');
     } finally {
       setIsSubmitting(false);
     }

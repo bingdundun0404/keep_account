@@ -48,8 +48,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       }
     } catch {}
     if (selected) {
-      const settings = await db.settings.get({ profileId: selected.id });
-      const active = await db.active.get({ profileId: selected.id });
+      const settings = await db.settings.get(selected.id);
+      const active = await db.active.get(selected.id);
       set({ currentProfile: selected, settings, active, profiles });
     } else {
       set({ profiles });
@@ -81,8 +81,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (state.currentProfile?.id === id) {
       const newProfile = profiles[0];
       if (newProfile) {
-        const settings = await db.settings.get({ profileId: newProfile.id });
-        const active = await db.active.get({ profileId: newProfile.id });
+        const settings = await db.settings.get(newProfile.id);
+        const active = await db.active.get(newProfile.id);
         set({ currentProfile: newProfile, settings, active, profiles });
         try {
           if (typeof window !== 'undefined') {
@@ -104,12 +104,12 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   async setProfile(p: Profile) {
     await db.profiles.put(p);
-    const existing = await db.settings.get({ profileId: p.id });
+    const existing = await db.settings.get(p.id);
     if (!existing) {
       await db.settings.put({ profileId: p.id, theme: 'dark', sleepGoalHours: 8, sleepGoalMinutes: 8 * 60, dayBoundaryHHmm: '02:00' });
     }
-    const settings = await db.settings.get({ profileId: p.id });
-    const active = await db.active.get({ profileId: p.id });
+    const settings = await db.settings.get(p.id);
+    const active = await db.active.get(p.id);
     set({ currentProfile: p, settings, active });
     // 持久化当前账户并写入切换日志
     try {
@@ -124,7 +124,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   async updateSettings(changes) {
     const profile = get().currentProfile;
     if (!profile) return;
-    const existing = await db.settings.get({ profileId: profile.id });
+    const existing = await db.settings.get(profile.id);
     // 兼容：若传入分钟级目标则优先使用，并同步回写小时级字段；否则根据传入的小时或现有值换算分钟
     const next: Settings = {
       profileId: profile.id,
@@ -148,7 +148,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   async startMainSleep(note?: string) {
     const profile = get().currentProfile;
     if (!profile) throw new Error('No profile');
-    const activeExisting = await db.active.get({ profileId: profile.id });
+    const activeExisting = await db.active.get(profile.id);
     if (activeExisting) throw new Error('Already sleeping');
     const nowISO = dayjs().toISOString();
     const active: ActiveSleepState = { profileId: profile.id, start: nowISO, note, type: 'main', createdAt: nowISO };
@@ -159,7 +159,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   async endMainSleep(rating: number, note?: string) {
     const profile = get().currentProfile;
     if (!profile) throw new Error('No profile');
-    const active = await db.active.get({ profileId: profile.id });
+    const active = await db.active.get(profile.id);
     if (!active) throw new Error('No active sleep');
     const endISO = dayjs().toISOString();
     const durationMinutes = minutesBetween(active.start, endISO);
@@ -186,7 +186,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     const profile = state.currentProfile;
     if (!profile) return;
     const nowISO = dayjs().toISOString();
-    const active = await db.active.get({ profileId: profile.id });
+    const active = await db.active.get(profile.id);
     if (active) {
       return; // already sleeping
     }

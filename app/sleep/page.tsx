@@ -106,9 +106,10 @@ export default function SleepPage() {
       // 清除草稿
       try { localStorage.removeItem(draftKey); } catch {}
       router.push('/records');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(`保存失败：${err?.message || '未知错误'}`);
+      const msg = err instanceof Error ? err.message : String(err);
+      alert(`保存失败：${msg || '未知错误'}`);
     } finally {
       setIsSaving(false);
     }
@@ -151,6 +152,7 @@ export default function SleepPage() {
                 <button
                   key={n}
                   className={`star-btn ${rating && rating >= n ? 'selected' : ''}`}
+                  role="radio"
                   aria-checked={rating === n}
                   aria-label={`${n} 星`}
                   onClick={() => { setRating(n); setRatingConfirmed(false); hapticPulse(10); }}

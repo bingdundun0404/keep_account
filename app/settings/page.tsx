@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { useAppStore } from '../../store/appStore';
 import { db } from '../../lib/db';
 import { useNavigationStore } from '../../store/navigationStore';
@@ -9,7 +8,7 @@ import { useMemo } from 'react';
 import { minutesBetween } from '../../lib/time';
 
 export default function SettingsPage() {
-  const { currentProfile, settings, loadInitial } = useAppStore();
+  const { currentProfile, settings } = useAppStore();
   const { pushRoute } = useNavigationStore();
   // 以分钟为单位的目标：范围 240-720，步进 1 分钟
   const initialGoalMinutes = useMemo(() => {

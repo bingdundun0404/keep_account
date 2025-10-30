@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import ConfirmDialog from "../components/ConfirmDialog";
+import type { Profile } from "../lib/types";
 
 export default function Home() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function Home() {
     setConfirmOpen(true);
   };
 
-  const handleSelectProfile = (profile: any) => {
+  const handleSelectProfile = (profile: Profile) => {
     useAppStore.getState().setProfile(profile).then(() => {
       router.push('/records');
     });

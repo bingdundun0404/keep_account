@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface RequireInputConfig {
   placeholder?: string;
@@ -26,9 +26,10 @@ export default function ConfirmDialog({
   requireInput?: RequireInputConfig;
 }) {
   const [value, setValue] = useState("");
-  useEffect(() => {
-    if (!open) setValue("");
-  }, [open]);
+  const handleCancel = () => {
+    setValue("");
+    onCancel();
+  };
 
   const needMatch = !!requireInput;
   const allowConfirm = needMatch ? value === requireInput!.matchText : true;
@@ -36,7 +37,7 @@ export default function ConfirmDialog({
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/50" onClick={onCancel} />
+      <div className="absolute inset-0 bg-black/50" onClick={handleCancel} />
       <div className="relative z-10 w-[90%] max-w-md rounded-md border border-zinc-800 bg-zinc-900 p-4">
         <h3 className="text-lg font-medium">{title}</h3>
         {description && <p className="mt-2 text-sm text-zinc-400">{description}</p>}
@@ -54,7 +55,7 @@ export default function ConfirmDialog({
         <div className="mt-4 flex justify-end gap-3">
           <button
             className="rounded border border-zinc-700 px-3 py-1 text-sm"
-            onClick={onCancel}
+            onClick={handleCancel}
           >{cancelText}</button>
           <button
             className={`rounded px-3 py-1 text-sm ${allowConfirm ? 'bg-red-600 text-white' : 'bg-zinc-700 text-zinc-300 cursor-not-allowed'}`}
