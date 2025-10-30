@@ -25,6 +25,40 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* 无障碍与响应式文字颜色系统：统一文字颜色并在深浅色与移动设备上自动适配 */
+:root {
+  /* 文字角色变量（默认浅色模式） */
+  --text-primary: #171717;    /* 主文字：深色 */
+  --text-secondary: #3f3f46;  /* 次级文字：比主文字稍浅 */
+  --text-muted: #52525b;      /* 辅助/说明文字：更浅但保持可读性 */
+  --border-color: #d4d4d8;    /* 边框：浅色模式下较浅的灰 */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 深色模式下的文字角色变量 */
+    --text-primary: #fafafa;   /* 主文字：近白色，提高对比度 */
+    --text-secondary: #e4e4e7; /* 次级文字：亮灰，保证易读 */
+    --text-muted: #c7c7cc;     /* 辅助文字：亮灰，移动端不显得过暗 */
+    --border-color: #3f3f46;   /* 边框：深灰，避免过暗难以辨识 */
+  }
+}
+
+/* 设备类型感知：粗指针通常为移动设备，略提升辅助文字亮度以增强可读性 */
+@media (pointer: coarse) {
+  :root {
+    --text-muted: #d1d1d6; /* iOS/Android 上进一步提亮说明文字 */
+  }
+}
+
+/* 将常见 Tailwind 文本与边框灰色类映射到自适应变量，确保跨设备与主题一致可读 */
+.text-zinc-100, .text-zinc-200, .text-zinc-300 { color: var(--text-secondary) !important; }
+.text-zinc-400, .text-zinc-500 { color: var(--text-muted) !important; }
+.border-zinc-700, .border-zinc-800 { border-color: var(--border-color) !important; }
+
+/* 默认正文颜色使用主文字变量，以确保在没有显式类时也具备良好对比度 */
+body { color: var(--text-primary); }
+
 /* 夜空背景：启用于睡眠记录与睡眠中页面。使用纯 CSS 渐变与轻量动画，保证性能与可读性 */
 .night-sky {
   position: fixed;
