@@ -43,7 +43,7 @@ export default function SettingsPage() {
       <div className="mt-6 space-y-4">
         <div>
           <div className="flex items-center">
-            <label className="text-sm text-zinc-400">睡眠时长</label>
+            <label className="text-sm text-zinc-400">目标睡眠时长</label>
             <input
               type="time"
               min="00:00"
