@@ -22,10 +22,21 @@ export default function MoonPhase({
   viewRotation?: number; // 视角旋转（度数），北半球默认 0，南半球默认 +180
   refreshMs?: number;
 }) {
-  const [now, setNow] = useState<Date>(() => new Date());
+  // 使用固定的初始时间戳，避免服务端和客户端初始化时间差异
+  const [now, setNow] = useState<Date>(() => {
+    // 将时间戳四舍五入到最近的分钟，确保服务端和客户端一致
+    const currentTime = new Date();
+    const roundedTime = new Date(Math.floor(currentTime.getTime() / 60000) * 60000);
+    return roundedTime;
+  });
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), Math.max(10_000, refreshMs));
+    const id = setInterval(() => {
+      // 同样将更新的时间四舍五入到分钟
+      const currentTime = new Date();
+      const roundedTime = new Date(Math.floor(currentTime.getTime() / 60000) * 60000);
+      setNow(roundedTime);
+    }, Math.max(10_000, refreshMs));
     return () => clearInterval(id);
   }, [refreshMs]);
 
@@ -39,7 +50,8 @@ export default function MoonPhase({
   const p = data.phase; // 0..1
   const d = p <= 0.5 ? 4 * R * p : 4 * R * (1 - p); // 阴影圆心距（0→新月，R→上/下弦，2R→满月）
   const dir = p <= 0.5 ? 1 : -1; // 盈→向右，亏→向左
-  const shadowCx = CX + dir * d;
+  // 四舍五入到小数点后6位，避免服务端和客户端精度差异导致的水合不匹配
+  const shadowCx = Math.round((CX + dir * d) * 1000000) / 1000000;
 
   return (
     <svg viewBox="0 0 100 100" width="100%" height="100%" role="img" aria-label={`月相：${data.phaseName}，照明比例 ${(data.illumination * 100).toFixed(1)}%`}

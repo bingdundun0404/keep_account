@@ -28,9 +28,38 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* 强制所有文本元素使用白色字体 */
+/* 强制所有文本元素使用白色字体，但保留特定功能颜色 */
 * {
   color: inherit;
+}
+
+/* 保留特定功能的颜色样式 - 使用具体颜色值 */
+.text-blue-400 {
+  color: rgb(96 165 250) !important;
+}
+
+.text-red-400 {
+  color: rgb(248 113 113) !important;
+}
+
+.text-red-300 {
+  color: rgb(252 165 165) !important;
+}
+
+.text-emerald-400 {
+  color: rgb(52 211 153) !important;
+}
+
+.text-green-400 {
+  color: rgb(74 222 128) !important;
+}
+
+.hover\:text-blue-400:hover {
+  color: rgb(96 165 250) !important;
+}
+
+.hover\:text-red-300:hover {
+  color: rgb(252 165 165) !important;
 }
 
 /* 移动端特定样式优化 */
@@ -40,9 +69,38 @@ body {
     color: #ededed !important;
   }
   
-  /* 确保所有文本在移动端显示为白色 */
+  /* 确保所有文本在移动端显示为白色，但保留特定功能颜色 */
   h1, h2, h3, h4, h5, h6, p, span, div, label {
     color: #ededed !important;
+  }
+  
+  /* 移动端也要保留特定功能的颜色样式 - 使用具体颜色值 */
+  .text-blue-400 {
+    color: rgb(96 165 250) !important;
+  }
+
+  .text-red-400 {
+    color: rgb(248 113 113) !important;
+  }
+
+  .text-red-300 {
+    color: rgb(252 165 165) !important;
+  }
+
+  .text-emerald-400 {
+    color: rgb(52 211 153) !important;
+  }
+
+  .text-green-400 {
+    color: rgb(74 222 128) !important;
+  }
+
+  .hover\:text-blue-400:hover {
+    color: rgb(96 165 250) !important;
+  }
+
+  .hover\:text-red-300:hover {
+    color: rgb(252 165 165) !important;
   }
 }
 
