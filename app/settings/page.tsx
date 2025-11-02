@@ -53,7 +53,7 @@ export default function SettingsPage() {
               min="00:00"
               max="23:59"
               step="60"
-              className="ml-2 w-32 rounded border border-zinc-700 bg-transparent px-2 py-1"
+              className="ml-2 w-32 rounded border border-zinc-700 bg-zinc-800 text-zinc-100 px-2 py-1"
               value={(() => {
                 const h = String(Math.floor(goalMinutes / 60)).padStart(2, '0');
                 const m = String(goalMinutes % 60).padStart(2, '0');
@@ -75,7 +75,7 @@ export default function SettingsPage() {
           <label className="text-sm text-zinc-400">时间归属分界点 </label>
           <input
             type="time"
-            className="mt-1 w-32 rounded border border-zinc-700 bg-transparent px-2 py-1"
+            className="mt-1 w-32 rounded border border-zinc-700 bg-zinc-800 text-zinc-100 px-2 py-1"
             value={boundary}
             onChange={(e) => setBoundary(e.target.value)}
           />

@@ -164,7 +164,7 @@ export default function ManualAddModal({ open, onClose, onSuccess }: ManualAddMo
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 disabled={isSubmitting}
-                className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm disabled:opacity-50"
+                className="w-full rounded border border-zinc-700 bg-zinc-800 text-zinc-100 px-3 py-2 text-sm disabled:opacity-50"
               />
             </div>
           </div>
@@ -187,7 +187,7 @@ export default function ManualAddModal({ open, onClose, onSuccess }: ManualAddMo
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 disabled={isSubmitting}
-                className="w-full rounded border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm disabled:opacity-50"
+                className="w-full rounded border border-zinc-700 bg-zinc-800 text-zinc-100 px-3 py-2 text-sm disabled:opacity-50"
               />
             </div>
           </div>
