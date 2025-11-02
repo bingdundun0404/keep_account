@@ -17,7 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="min-h-screen bg-black text-zinc-50">
+      <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
         {children}
       </body>
     </html>
