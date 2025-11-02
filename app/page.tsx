@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import ConfirmDialog from "../components/ConfirmDialog";
+import NightSky from "../components/NightSky";
 import type { Profile } from "../lib/types";
 
 export default function Home() {
@@ -34,7 +35,10 @@ export default function Home() {
   };
 
   return (
-    <div className="mx-auto max-w-md p-6 min-h-screen flex flex-col">
+    <>
+      {/* 星空背景 */}
+      <NightSky />
+      <div className="mx-auto max-w-md p-6 min-h-screen flex flex-col relative z-10">
       {/* 顶部欢迎语 */}
       <header className="text-center mb-8">
         <h1 className="text-2xl font-bold text白">欢迎使用睡眠追踪系统</h1>
@@ -103,6 +107,7 @@ export default function Home() {
           setTargetName("");
         }}
       />
-    </div>
+      </div>
+    </>
   );
 }

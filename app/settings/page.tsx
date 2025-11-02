@@ -4,6 +4,7 @@ import { useAppStore } from '../../store/appStore';
 import { db } from '../../lib/db';
 import { useNavigationStore } from '../../store/navigationStore';
 import BackButton from '../../components/BackButton';
+import NightSky from '../../components/NightSky';
 import { useMemo } from 'react';
 import { minutesBetween } from '../../lib/time';
 
@@ -34,7 +35,10 @@ export default function SettingsPage() {
   }, [settings]);
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <>
+      {/* 星空背景 */}
+      <NightSky />
+      <div className="mx-auto max-w-3xl p-6 relative z-10">
       {/* 固定右上角返回按钮，考虑全面屏安全区与响应式边距 */}
       <div className="safe-fixed-top-right z-50"><BackButton /></div>
       <div className="flex items-center justify-between">
@@ -139,6 +143,7 @@ export default function SettingsPage() {
         <h2 className="text-lg font-medium">隐私声明</h2>
         <p className="mt-2 text-sm text-zinc-400">本应用不收集、不上传任何个人数据，所有记录仅保存在你的设备本地（IndexedDB）。导入备份将覆盖现有数据。</p>
       </section>
-    </div>
+      </div>
+    </>
   );
 }

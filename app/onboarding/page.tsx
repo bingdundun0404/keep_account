@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '../../store/appStore';
 import { db } from '../../lib/db';
+import NightSky from '../../components/NightSky';
 import type { Profile } from '../../lib/types';
 
 export default function OnboardingPage() {
@@ -11,7 +12,10 @@ export default function OnboardingPage() {
   const { setProfile } = useAppStore();
 
   return (
-    <div className="mx-auto max-w-md p-6">
+    <>
+      {/* 星空背景 */}
+      <NightSky />
+      <div className="mx-auto max-w-md p-6 relative z-10">
       <h1 className="text-xl font-semibold">欢迎使用</h1>
       <p className="mt-2 text-sm text-zinc-400">为这段睡眠记录起个名字吧</p>
       <div className="mt-4 responsive-actions">
@@ -37,6 +41,7 @@ export default function OnboardingPage() {
           }}
         >开始</button>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

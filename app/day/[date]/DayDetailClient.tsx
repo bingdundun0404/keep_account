@@ -6,6 +6,7 @@ import { db } from "../../../lib/db";
 import { useAppStore } from "../../../store/appStore";
 import { useNavigationStore } from "../../../store/navigationStore";
 import BackButton from "../../../components/BackButton";
+import NightSky from "../../../components/NightSky";
 import { SleepSession } from "../../../lib/types";
 import {
   calcDayTotals,
@@ -68,7 +69,10 @@ export default function DayDetailClient() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <>
+      {/* 星空背景 */}
+      <NightSky />
+      <div className="mx-auto max-w-3xl p-6 relative z-10">
       <div className="safe-fixed-top-right z-50">
         <BackButton />
       </div>
@@ -159,6 +163,7 @@ export default function DayDetailClient() {
           setTargetSessionId(null);
         }}
       />
-    </div>
+      </div>
+    </>
   );
 }
