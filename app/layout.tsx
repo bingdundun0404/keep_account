@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import TimePickerMobileFix from "@/components/TimePickerMobileFix";
 
 export const metadata: Metadata = {
   title: "睡眠记录 App",
@@ -19,7 +18,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-        <TimePickerMobileFix />
         {children}
       </body>
     </html>
