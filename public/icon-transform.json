@@ -1,0 +1,19 @@
+{
+  "operations": [
+    {
+      "name": "rotate",
+      "angle_deg": -45,
+      "files": [
+        "moon-icon-192_rot45.png",
+        "moon-icon-512_rot45.png"
+      ],
+      "source_files": [
+        "moon-icon-192.png",
+        "moon-icon-512.png"
+      ],
+      "timestamp": "2025-11-04T14:22:59.893Z",
+      "reversible": true,
+      "revert_command": "npm run revert:icons"
+    }
+  ]
+}

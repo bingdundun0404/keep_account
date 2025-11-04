@@ -8,6 +8,8 @@ import NightSky from '../../components/NightSky';
 import { useMemo } from 'react';
 import { minutesBetween } from '../../lib/time';
 import PWAInstallPrompt from '../../components/PWAInstallPrompt';
+import dynamic from 'next/dynamic';
+const VersionChecker = dynamic(() => import('../../components/VersionChecker'), { ssr: false });
 
 export default function SettingsPage() {
   const { currentProfile, settings } = useAppStore();
@@ -144,6 +146,11 @@ export default function SettingsPage() {
         <h2 className="text-lg font-medium">安装到桌面</h2>
         <p className="mt-2 text-sm text-zinc-400">支持 Chrome/Edge（桌面与安卓）。iOS 请使用 Safari 的“添加到主屏幕”。</p>
         <PWAInstallPrompt />
+      </section>
+
+      <section className="mt-6">
+        <h2 className="text-lg font-medium">版本与更新</h2>
+        <VersionChecker />
       </section>
 
       <section className="mt-6">
