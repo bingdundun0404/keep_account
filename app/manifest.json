@@ -2,7 +2,9 @@
   "name": "睡眠记录 App",
   "short_name": "睡眠记录",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#000000",
   "theme_color": "#0b0b0b",
   "lang": "zh-CN",
@@ -11,6 +13,18 @@
       "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "/window.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/window.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }

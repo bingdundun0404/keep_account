@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ServiceWorkerRegistrar from "../components/ServiceWorkerRegistrar";
 
 export const metadata: Metadata = {
   title: "睡眠记录 App",
@@ -19,6 +20,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
         {children}
+        {/* 注册 Service Worker */}
+        <ServiceWorkerRegistrar />
       </body>
     </html>
   );
