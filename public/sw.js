@@ -1,67 +1,101 @@
-const CACHE_NAME = 'sleep-pwa-cache-v1';
+const CACHE_NAME = 'sleep-pwa-cache-v2';
 const CORE_ASSETS = [
+  // App Shell 与核心路由
   '/',
+  '/settings',
+  '/records',
+  '/sleep',
+  '/onboarding',
+  '/ui-preview',
+  '/time-picker-test',
+
+  // PWA 安装与图标
   '/manifest.json',
   '/favicon.ico',
+  '/moon-icon-192.png',
+  '/moon-icon-512.png',
+  '/moon-icon-192_rot45.png',
+  '/moon-icon-512_rot45.png',
+
+  // 其他静态资源
+  '/file.svg',
+  '/globe.svg',
+  '/next.svg',
+  '/vercel.svg',
+  '/window.svg',
+  '/version.json',
 ];
 
 self.addEventListener('install', (event) => {
-  // 预缓存核心资源
+  // 预缓存核心资源与路由
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting())
+    caches
+      .open(CACHE_NAME)
+      .then((cache) => cache.addAll(CORE_ASSETS))
+      .then(() => self.skipWaiting())
   );
 });
 
 self.addEventListener('activate', (event) => {
   // 清理旧版本缓存
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.map((key) => {
-      if (key !== CACHE_NAME) return caches.delete(key);
-    }))).then(() => self.clients.claim())
+    caches
+      .keys()
+      .then((keys) =>
+        Promise.all(
+          keys.map((key) => {
+            if (key !== CACHE_NAME) return caches.delete(key);
+          })
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
-// 基本运行时缓存策略：
-// - 对导航请求（HTML）采用网络优先，失败时回退到缓存的首页
-// - 对同源的GET静态资源采用 stale-while-revalidate
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   const url = new URL(req.url);
 
   if (req.method !== 'GET') return; // 只处理GET
 
+  // 导航请求（HTML）：离线优先（Cache First），找不到则回退首页
   if (req.mode === 'navigate') {
-    event.respondWith((async () => {
-      try {
-        const fresh = await fetch(req);
-        // 缓存成功的导航响应
+    event.respondWith(
+      (async () => {
         const cache = await caches.open(CACHE_NAME);
-        cache.put('/', fresh.clone());
-        return fresh;
-      } catch (err) {
-        const cache = await caches.open(CACHE_NAME);
-        const cached = await cache.match('/');
-        return cached || Response.error();
-      }
-    })());
+        const cached = await cache.match(url.pathname);
+        if (cached) return cached;
+        const home = await cache.match('/');
+        return home || Response.error();
+      })()
+    );
     return;
   }
 
-  // 同源静态资源的 S-W-R
+  // 同源静态资源：离线优先（Cache First），同时后台尝试更新缓存
   if (url.origin === self.location.origin) {
-    event.respondWith((async () => {
-      const cache = await caches.open(CACHE_NAME);
-      const cached = await cache.match(req);
-      const networkPromise = fetch(req).then((res) => {
-        if (res && res.status === 200) cache.put(req, res.clone());
-        return res;
-      }).catch(() => null);
-      return cached || networkPromise || Response.error();
-    })());
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(CACHE_NAME);
+        const cached = await cache.match(req);
+        if (cached) {
+          // 后台异步更新（不阻塞响应）
+          fetch(req)
+            .then((res) => {
+              if (res && res.status === 200) cache.put(req, res.clone());
+            })
+            .catch(() => {});
+          return cached;
+        }
+        // 首次访问未缓存时尝试网络获取并缓存
+        try {
+          const res = await fetch(req);
+          if (res && res.status === 200) cache.put(req, res.clone());
+          return res;
+        } catch {
+          return Response.error();
+        }
+      })()
+    );
   }
-});
-
-// 可选：监听消息以便主线程触发更新
-self.addEventListener('message', (event) => {
-  if (event.data === 'SKIP_WAITING') self.skipWaiting();
 });
