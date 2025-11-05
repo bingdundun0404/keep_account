@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sleep-pwa-cache-v2';
+const CACHE_NAME = 'sleep-pwa-cache-v6';
 const CORE_ASSETS = [
   // App Shell 与核心路由
   '/',
@@ -11,11 +11,8 @@ const CORE_ASSETS = [
 
   // PWA 安装与图标
   '/manifest.json',
-  '/favicon.ico',
-  '/moon-icon-192.png',
-  '/moon-icon-512.png',
-  '/moon-icon-192_rot45.png',
-  '/moon-icon-512_rot45.png',
+  '/icon_192.png',
+  '/icon_512.png',
 
   // 其他静态资源
   '/file.svg',
