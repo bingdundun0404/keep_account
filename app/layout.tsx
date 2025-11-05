@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import ServiceWorkerRegistrar from "../components/ServiceWorkerRegistrar";
+import { VERSION_INFO } from "../lib/version";
 
 export const metadata: Metadata = {
   title: "睡眠记录 App",
@@ -16,7 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="supported-color-schemes" content="light dark" />
         <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
         <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href={`/manifest.json?v=${VERSION_INFO.version}`} />
       </head>
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
         {children}
