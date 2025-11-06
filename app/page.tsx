@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import ConfirmDialog from "../components/ConfirmDialog";
-import NightSky from "../components/NightSky";
+import dynamic from "next/dynamic";
+const NightSky = dynamic(() => import("../components/NightSky"), { ssr: false });
 import type { Profile } from "../lib/types";
 
 export default function Home() {

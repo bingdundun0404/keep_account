@@ -9,7 +9,8 @@ import CalendarGrid from '@/components/CalendarGrid';
 import SleepStartEndButton from '@/components/SleepStartEndButton';
 import BackButton from '@/components/BackButton';
 import ManualAddModal from '@/components/ManualAddModal';
-import NightSky from '@/components/NightSky';
+import dynamic from 'next/dynamic';
+const NightSky = dynamic(() => import('@/components/NightSky'), { ssr: false });
 
 export default function RecordsPage() {
   const router = useRouter();

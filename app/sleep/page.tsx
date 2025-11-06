@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import dayjs from '@/lib/dayjs';
 import { useAppStore } from '@/store/appStore';
 import { useNavigationStore } from '@/store/navigationStore';
-import NightSky from '@/components/NightSky';
+import dynamic from 'next/dynamic';
+const NightSky = dynamic(() => import('@/components/NightSky'), { ssr: false });
 
 export default function SleepPage() {
   const router = useRouter();

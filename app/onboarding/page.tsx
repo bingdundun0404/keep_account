@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '../../store/appStore';
 import { db } from '../../lib/db';
-import NightSky from '../../components/NightSky';
+import dynamic from 'next/dynamic';
+const NightSky = dynamic(() => import('../../components/NightSky'), { ssr: false });
 import type { Profile } from '../../lib/types';
 
 export default function OnboardingPage() {

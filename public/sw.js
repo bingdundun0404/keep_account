@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sleep-pwa-cache-v6';
+const CACHE_NAME = 'sleep-pwa-cache-v7';
 const CORE_ASSETS = [
   // App Shell 与核心路由
   '/',
@@ -79,6 +79,14 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(req.url);
 
   if (req.method !== 'GET') return; // 只处理GET
+
+  // 放行 Well-Known 与非 HTML 的导航（例如 JSON），避免错误回退到首页
+  const isWellKnown = url.pathname.startsWith('/.well-known/');
+  const isJsonNav = req.mode === 'navigate' && url.pathname.endsWith('.json');
+  if (isWellKnown || isJsonNav) {
+    event.respondWith(fetch(req));
+    return;
+  }
 
   // 导航请求（HTML）：离线优先（Cache First），找不到则回退首页
   if (req.mode === 'navigate') {

@@ -58,9 +58,14 @@ export default function MoonPhase({
     ? Math.round((CX + dir * d) * 1000000) / 1000000
     : CX + 90; // 占位：将遮罩圆移出视窗，避免呈现动态月相导致水合差异
 
+  // 首屏不渲染，待客户端挂载后再绘制，彻底避免 SSR 与客户端差异
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <svg viewBox="0 0 100 100" width="100%" height="100%" role="img" aria-label={mounted ? `月相：${data.phaseName}，照明比例 ${(data.illumination * 100).toFixed(1)}%` : "月相组件"}
-      style={{ display: "block" }}
+    <svg viewBox="0 0 100 100" width="100%" height="100%" role="img" aria-label={`月相：${data.phaseName}，照明比例 ${(data.illumination * 100).toFixed(1)}%`}
+      style={{ display: "block" }} suppressHydrationWarning={true}
     >
       <defs>
         {/* 月面纹理与光泽（柔和） */}

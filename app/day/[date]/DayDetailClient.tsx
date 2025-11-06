@@ -6,7 +6,8 @@ import { db } from "../../../lib/db";
 import { useAppStore } from "../../../store/appStore";
 import { useNavigationStore } from "../../../store/navigationStore";
 import BackButton from "../../../components/BackButton";
-import NightSky from "../../../components/NightSky";
+import dynamic from 'next/dynamic';
+const NightSky = dynamic(() => import("../../../components/NightSky"), { ssr: false });
 import { SleepSession } from "../../../lib/types";
 import {
   calcDayTotals,

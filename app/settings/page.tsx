@@ -4,11 +4,11 @@ import { useAppStore } from '../../store/appStore';
 import { db } from '../../lib/db';
 import { useNavigationStore } from '../../store/navigationStore';
 import BackButton from '../../components/BackButton';
-import NightSky from '../../components/NightSky';
+import dynamic from 'next/dynamic';
+const NightSky = dynamic(() => import('../../components/NightSky'), { ssr: false });
 import { useMemo } from 'react';
 import { minutesBetween } from '../../lib/time';
 import PWAInstallPrompt from '../../components/PWAInstallPrompt';
-import dynamic from 'next/dynamic';
 const VersionChecker = dynamic(() => import('../../components/VersionChecker'), { ssr: false });
 
 export default function SettingsPage() {
