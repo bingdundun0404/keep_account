@@ -7,7 +7,6 @@ const CORE_ASSETS = [
   '/sleep',
   '/onboarding',
   '/ui-preview',
-  '/time-picker-test',
 
   // PWA 安装与图标
   '/manifest.json',
@@ -26,10 +25,12 @@ const CORE_ASSETS = [
 self.addEventListener('install', (event) => {
   // 预缓存核心资源与路由
   event.waitUntil(
-    caches
-      .open(CACHE_NAME)
-      .then((cache) => cache.addAll(CORE_ASSETS))
-      .then(() => self.skipWaiting())
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      // 使用容错方式逐个添加，避免单个 404/失败导致整个安装失败
+      await Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url)));
+      await self.skipWaiting();
+    })()
   );
 });
 
