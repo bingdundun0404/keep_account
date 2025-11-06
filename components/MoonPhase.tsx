@@ -22,6 +22,9 @@ export default function MoonPhase({
   viewRotation?: number; // 视角旋转（度数），北半球默认 0，南半球默认 +180
   refreshMs?: number;
 }) {
+  // 首屏使用占位以避免 SSR 与客户端时间差导致的水合不匹配
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   // 使用固定的初始时间戳，避免服务端和客户端初始化时间差异
   const [now, setNow] = useState<Date>(() => {
     // 将时间戳四舍五入到最近的分钟，确保服务端和客户端一致
@@ -51,10 +54,12 @@ export default function MoonPhase({
   const d = p <= 0.5 ? 4 * R * p : 4 * R * (1 - p); // 阴影圆心距（0→新月，R→上/下弦，2R→满月）
   const dir = p <= 0.5 ? 1 : -1; // 盈→向右，亏→向左
   // 四舍五入到小数点后6位，避免服务端和客户端精度差异导致的水合不匹配
-  const shadowCx = Math.round((CX + dir * d) * 1000000) / 1000000;
+  const shadowCx = mounted
+    ? Math.round((CX + dir * d) * 1000000) / 1000000
+    : CX + 90; // 占位：将遮罩圆移出视窗，避免呈现动态月相导致水合差异
 
   return (
-    <svg viewBox="0 0 100 100" width="100%" height="100%" role="img" aria-label={`月相：${data.phaseName}，照明比例 ${(data.illumination * 100).toFixed(1)}%`}
+    <svg viewBox="0 0 100 100" width="100%" height="100%" role="img" aria-label={mounted ? `月相：${data.phaseName}，照明比例 ${(data.illumination * 100).toFixed(1)}%` : "月相组件"}
       style={{ display: "block" }}
     >
       <defs>
