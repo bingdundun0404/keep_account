@@ -22,6 +22,25 @@ const CORE_ASSETS = [
   '/version.json',
 ];
 
+// 从页面 HTML 中解析并预缓存 Next 构建产物（/_next/static/...）
+async function warmCacheFromHtml(cache, path) {
+  try {
+    const res = await fetch(path);
+    if (!res || res.status !== 200) return;
+    const html = await res.text();
+    const assetUrls = Array.from(html.matchAll(/(?:src|href)="(\/[_]next\/static\/[^\"]+)"/g)).map(m => m[1]);
+    const uniqueAssets = [...new Set(assetUrls)];
+    await Promise.allSettled(uniqueAssets.map(async (u) => {
+      try {
+        const r = await fetch(u);
+        if (r && r.status === 200) await cache.put(u, r.clone());
+      } catch {}
+    }));
+    // 把页面本身也缓存（如果尚未缓存）
+    await cache.put(path, new Response(html, { headers: { 'Content-Type': 'text/html' } }));
+  } catch {}
+}
+
 self.addEventListener('install', (event) => {
   // 预缓存核心资源与路由
   event.waitUntil(
@@ -29,6 +48,11 @@ self.addEventListener('install', (event) => {
       const cache = await caches.open(CACHE_NAME);
       // 使用容错方式逐个添加，避免单个 404/失败导致整个安装失败
       await Promise.allSettled(CORE_ASSETS.map((url) => cache.add(url)));
+      // 解析并预热关键页面引用的构建资源，提升首装离线体验
+      const pagesToWarm = ['/', '/settings', '/records', '/sleep', '/onboarding', '/ui-preview'];
+      for (const p of pagesToWarm) {
+        await warmCacheFromHtml(cache, p);
+      }
       await self.skipWaiting();
     })()
   );
